@@ -208,7 +208,149 @@ Substitute values:
 v ≈ 11.2 km/s
       `
     }
-  ]
+  ],
+  unit6: [
+  {
+    id: 1,
+    question: "A 0.5 kg mass is attached to a spring with k = 200 N/m. What is its period?",
+    answer: `
+T = 2π√(m/k)
+
+T = 2π√(0.5/200)
+
+T ≈ 0.314 s
+`
+  },
+  {
+    id: 2,
+    question: "A pendulum has a length of 2 m. What is its period? (g = 9.8 m/s²)",
+    answer: `
+T = 2π√(L/g)
+
+T = 2π√(2/9.8)
+
+T ≈ 2.84 s
+`
+  },
+  {
+    id: 3,
+    question: "What is the maximum speed of a 1 kg mass oscillating with amplitude 0.2 m and angular frequency 5 rad/s?",
+    answer: `
+v_max = Aω
+
+v_max = 0.2 × 5
+
+v_max = 1 m/s
+`
+  }
+],
+
+unit7: [
+  {
+    id: 1,
+    question: "What is the electric force between two charges of 2 C and 3 C separated by 1 m? (k = 9×10⁹)",
+    answer: `
+F = kq₁q₂ / r²
+
+F = (9×10⁹)(2)(3) / 1²
+
+F = 5.4 × 10¹⁰ N
+`
+  },
+  {
+    id: 2,
+    question: "What is the electric field 2 m away from a 5 C charge?",
+    answer: `
+E = kq / r²
+
+E = (9×10⁹)(5) / 4
+
+E = 1.125 × 10¹⁰ N/C
+`
+  },
+  {
+    id: 3,
+    question: "Two identical charges repel with a force of 10 N at 0.5 m apart. What happens to the force if distance doubles?",
+    answer: `
+F ∝ 1 / r²
+
+If r doubles → F becomes 1/4
+
+New force = 2.5 N
+`
+  }
+],
+
+unit8: [
+  {
+    id: 1,
+    question: "What is the electric flux through a closed surface enclosing 4 C of charge?",
+    answer: `
+Φ = Q / ε₀
+
+Φ = 4 / (8.85 × 10⁻¹²)
+
+Φ ≈ 4.52 × 10¹¹ N·m²/C
+`
+  },
+  {
+    id: 2,
+    question: "What is the electric field inside a conductor at electrostatic equilibrium?",
+    answer: `
+Inside a conductor at equilibrium:
+
+E = 0
+`
+  },
+  {
+    id: 3,
+    question: "A Gaussian surface encloses no charge. What is the electric flux?",
+    answer: `
+Φ = Q / ε₀
+
+Since Q = 0
+
+Φ = 0
+`
+  }
+],
+
+unit9: [
+  {
+    id: 1,
+    question: "What is the electric potential 2 m from a 6 C charge?",
+    answer: `
+V = kq / r
+
+V = (9×10⁹)(6) / 2
+
+V = 2.7 × 10¹⁰ V
+`
+  },
+  {
+    id: 2,
+    question: "What is the potential energy of a 2 C charge placed in a 100 V potential?",
+    answer: `
+U = qV
+
+U = 2 × 100
+
+U = 200 J
+`
+  },
+  {
+    id: 3,
+    question: "If a charge moves through a 50 V potential difference and gains 100 J of energy, what is the charge?",
+    answer: `
+U = qV
+
+100 = q(50)
+
+q = 2 C
+`
+  }
+]
+
 };
 
 
