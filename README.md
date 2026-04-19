@@ -1,1 +1,1 @@
-Discord Bot that ask random physics and math questions
+Discord Bot that ask physics and math questions
