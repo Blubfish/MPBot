@@ -46,7 +46,6 @@ for (const folder of commandFolders) {
 
 client.on(Events.InteractionCreate, async (interaction) => {
   if (interaction.isChatInputCommand()) {
-    console.log(interaction);
 
     const command = interaction.client.commands.get(interaction.commandName);
 
@@ -76,22 +75,28 @@ client.on(Events.InteractionCreate, async (interaction) => {
   }
 
   if (interaction.isButton()) {
-    try {
-      if (interaction.customId === "getPhysicsAnswer") {
-        const questionData = activeQuestions.get(interaction.message.id);
-        await interaction.reply({
-          content: questionData.answer,
-          flags: MessageFlags.Ephemeral,
-        });
-      } else if (interaction.customId === "getMathAnswer") {
-        const questionData = activeQuestions.get(interaction.message.id);
-        await interaction.reply({
-          content: questionData.answer,
+  try {
+    if (
+      interaction.customId === "getPhysicsAnswer" ||
+      interaction.customId === "getMathAnswer"
+    ) {
+      const questionData = activeQuestions.get(interaction.message.id);
+
+      if (!questionData) {
+        return await interaction.reply({
+          content: "I couldn't find the saved answer for this question.",
           flags: MessageFlags.Ephemeral,
         });
       }
-    } catch (error) {
-      console.error(error);
+
+      await interaction.reply({
+        content: questionData.answer,
+        flags: MessageFlags.Ephemeral,
+      });
     }
+  } catch (error) {
+    console.error(error);
   }
+}
+
 });

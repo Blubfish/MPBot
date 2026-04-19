@@ -6,6 +6,7 @@ const {
 } = require("discord.js");
 const getRandomMathQuestion = require("../../questions/math_questions");
 const activeQuestions = require("../../activeQuestions");
+const {newGetRandomMathQuesiton, showAnswer} = require("../../questions/newmath_questions")
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -45,11 +46,16 @@ module.exports = {
       .setStyle(ButtonStyle.Success);
 
     const row = new ActionRowBuilder().addComponents(getMathAnswer);
-    const questionData = getRandomMathQuestion(
+
+    await interaction.deferReply();
+
+    const questionData = await newGetRandomMathQuesiton(
       interaction.options.getString("chapter"),
     );
 
-    await interaction.reply({
+    console.log(questionData)
+
+    await interaction.editReply({
       content: questionData.question,
       components: [row],
     });
