@@ -4,13 +4,14 @@ const {
   ButtonStyle,
   ActionRowBuilder,
 } = require("discord.js");
-const getRandomPhysicsQuestion = require("../../questions/physics_quesions");
+const getPhysicsQuestion = require("../../questions/physics_questions");
 const activeQuestions = require("../../activeQuestions");
+
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("physics")
-    .setDescription("give a physics problem to solve")
+    .setDescription("Gives a physics problem to solve")
     .addStringOption((option) =>
       option
         .setName("unit")
@@ -25,13 +26,14 @@ module.exports = {
           { name: "Unit 5: Gravitation", value: "unit5" },
           { name: "Unit 6: Oscillations", value: "unit6" },
           { name: "Unit 7: Electrostatics", value: "unit7" },
-          { name: "Unit 8: Gauss’s Law", value: "unit8" },
+          { name: "Unit 8: Gauss's Law", value: "unit8" },
           {
             name: "Unit 9: Electric Potential and Electric Potential Energy",
             value: "unit9",
           },
         ),
     ),
+
   async execute(interaction) {
     const getPhysicsAnswer = new ButtonBuilder()
       .setCustomId("getPhysicsAnswer")
@@ -40,11 +42,14 @@ module.exports = {
       .setStyle(ButtonStyle.Success);
 
     const row = new ActionRowBuilder().addComponents(getPhysicsAnswer);
-    const questionData = getRandomPhysicsQuestion(
+
+    await interaction.deferReply();
+
+    const questionData = await getPhysicsQuestion(
       interaction.options.getString("unit"),
     );
 
-    await interaction.reply({
+    await interaction.editReply({
       content: questionData.question,
       components: [row],
     });

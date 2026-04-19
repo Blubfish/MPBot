@@ -1,5 +1,4 @@
 require("dotenv").config();
-const getRandomPhysicsQuestion = require("./questions/physics_quesions");
 const activeQuestions = require("./activeQuestions");
 
 const {

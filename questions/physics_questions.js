@@ -3,7 +3,7 @@ const API_KEY = process.env.GEMINI_API_KEY;
 
 let currentCard = null;
 
-async function getMathQuestion(topic) {
+async function getPhysicsQuestion(topic) {
   const rules = `
   Return only raw JSON in this exact format:
   {"question":"...","answer":"..."}
@@ -12,30 +12,29 @@ async function getMathQuestion(topic) {
   - Do not include extra text outside the JSON
   - Do not use LaTex
   - Format it nicely so its easy for a normal user to read, don't clump too much into a big paragraph
-  - answer using less than 2000 symbol
+  - Keep the answer under 2000 characters
   `;
 
   function makePrompt(topicText) {
-    return `Generate one random AP Calculus BC style question from ${topicText}.\n${rules}`;
+    return `Generate one random AP Physics style question from ${topicText}.\n${rules}`;
   }
 
   const prompts = {
-    random: `Generate one random AP Calculus BC style question.\n${rules}`,
-    integrals: `Generate one random AP Calculus BC style integral question.\n${rules}`,
-    derivatives: `Generate one random AP Calculus BC style derivative question.\n${rules}`,
-    seriesTests: `Generate one random AP Calculus BC style series and convergence test question.\n${rules}`,
-    chapter3: makePrompt("Applications of Differentiation"),
-    chapter4: makePrompt("Integration"),
-    chapter5: makePrompt("Transcendental Functions"),
-    chapter6: makePrompt("Differential Equations"),
-    chapter7: makePrompt("Applications of Integration"),
-    chapter8: makePrompt("Integration Techniques, L'Hopital's Rule, and Improper Integrals"),
-    chapter9: makePrompt("Infinite Series"),
+    random: `Generate one random AP Physics style question.\n${rules}`,
+    unit1: makePrompt("Unit 1: Kinematics and Forces Part 1"),
+    unit2: makePrompt("Unit 2: More Dynamics and SHM"),
+    unit3: makePrompt("Unit 3: Work, Energy, and Momentum"),
+    unit4: makePrompt("Unit 4: Rotation and Torque"),
+    unit5: makePrompt("Unit 5: Gravitation"),
+    unit6: makePrompt("Unit 6: Oscillations"),
+    unit7: makePrompt("Unit 7: Electrostatics"),
+    unit8: makePrompt("Unit 8: Gauss's Law"),
+    unit9: makePrompt("Unit 9: Electric Potential and Electric Potential Energy"),
   };
 
-    const type = prompts[topic];
+  const prompt = prompts[topic];
 
-  if (!type) {
+  if (!prompt) {
     throw new Error("Invalid topic");
   }
 
@@ -49,7 +48,7 @@ async function getMathQuestion(topic) {
       body: JSON.stringify({
         contents: [
           {
-            parts: [{ text: makePrompt(type) }],
+            parts: [{ text: prompt }],
           },
         ],
       }),
@@ -69,10 +68,9 @@ async function getMathQuestion(topic) {
   }
 
   const cleanedText = text
-  .replace(/```json/g, "")
-  .replace(/```/g, "")
-  .trim();
-
+    .replace(/```json/g, "")
+    .replace(/```/g, "")
+    .trim();
 
   try {
     currentCard = JSON.parse(cleanedText);
@@ -84,5 +82,4 @@ async function getMathQuestion(topic) {
   return currentCard;
 }
 
-
-module.exports = getMathQuestion;
+module.exports = getPhysicsQuestion;

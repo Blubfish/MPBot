@@ -4,9 +4,8 @@ const {
   ButtonStyle,
   ActionRowBuilder,
 } = require("discord.js");
-const getRandomMathQuestion = require("../../questions/math_questions");
+const getMathQuestion = require("../../questions/math_questions");
 const activeQuestions = require("../../activeQuestions");
-const {newGetRandomMathQuesiton, showAnswer} = require("../../questions/newmath_questions")
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -49,11 +48,10 @@ module.exports = {
 
     await interaction.deferReply();
 
-    const questionData = await newGetRandomMathQuesiton(
+    const questionData = await getMathQuestion(
       interaction.options.getString("chapter"),
     );
 
-    console.log(questionData)
 
     await interaction.editReply({
       content: questionData.question,
