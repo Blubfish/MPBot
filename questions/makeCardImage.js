@@ -51,7 +51,15 @@ async function makeCardImage(currentCard) {
     </html>
   `;
 
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({
+    executablePath: '/usr/bin/chromium',
+    args: [
+      '--no-sandbox', 
+      '--disable-setuid-sandbox',
+      '--disable-dev-shm-usage' 
+    ],
+  });
+  
   const page = await browser.newPage();
 
   await page.setViewport({ width: 1000, height: 1200, deviceScaleFactor: 2 });
