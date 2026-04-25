@@ -1,19 +1,31 @@
 require("dotenv").config();
-const API_KEY = process.env.GEMINI_API_KEY;
-
-let currentCard = null;
+const { generateQuestionCard } = require("./geminiJson");
 
 async function getPhysicsQuestion(topic) {
   const rules = `
-  Return only raw JSON in this exact format:
-  {"question":"...","answer":"..."}
+      Return only a single raw JSON object.
+      Output must be directly parseable by JSON.parse with no preprocessing.
 
-  Rules:
-  - Do not include extra text outside the JSON
-  - Do not use LaTex
-  - Format it nicely so its easy for a normal user to read, don't clump too much into a big paragraph
-  - Keep the answer under 2000 characters
-  `;
+      Required format:
+      {"question":"...","answer":"..."}
+
+      Rules:
+      - Do not include markdown fences.
+      - Do not include any text before or after the JSON object.
+      - Use exactly these fields: "question" and "answer".
+      - The entire response must be valid JSON.
+      - Inside JSON strings, every backslash must be escaped as \\\\.
+      - Therefore inline LaTeX delimiters must appear as \\\\( ... \\\\).
+      - Therefore display LaTeX delimiters must appear as \\\\[ ... \\\\].
+      - Example of valid JSON string content: "Solve \\\\(x+1=2\\\\)."
+      - Do not use unescaped sequences like \\(, \\), \\[, \\], \\], \\frac, \\geq in raw JSON.
+      - Keep the answer under 2000 characters.
+      - Write clearly for a normal user.
+      - Break the answer into short paragraphs when helpful.
+      - If the problem has parts like A, B, and C, keep them in the same string but separate each part with a blank line.
+      - Format multipart text like: "A. ...\\n\\nB. ...\\n\\nC. ..."
+      - Do not combine all parts into one large paragraph.
+    `;
 
   function makePrompt(topicText) {
     return `Generate one random AP Physics style question from ${topicText}.\n${rules}`;
@@ -29,56 +41,21 @@ async function getPhysicsQuestion(topic) {
     unit6: makePrompt("Unit 6: Oscillations"),
     unit7: makePrompt("Unit 7: Electrostatics"),
     unit8: makePrompt("Unit 8: Gauss's Law"),
-    unit9: makePrompt("Unit 9: Electric Potential and Electric Potential Energy"),
+    unit9: makePrompt("Unit 9: Electric Potential and Electric Potential Energy"),  
+    unit10: makePrompt("Unit 10: Circuits"),
+    unit11: makePrompt("Unit 11: Magnetism"),
   };
 
   const prompt = prompts[topic];
+
 
   if (!prompt) {
     throw new Error("Invalid topic");
   }
 
-  const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        contents: [
-          {
-            parts: [{ text: prompt }],
-          },
-        ],
-      }),
-    }
-  );
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data.error?.message || "Gemini request failed");
-  }
-
-  const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-
-  if (!text) {
-    throw new Error("No text returned from Gemini");
-  }
-
-  const cleanedText = text
-    .replace(/```json/g, "")
-    .replace(/```/g, "")
-    .trim();
-
-  try {
-    currentCard = JSON.parse(cleanedText);
-  } catch (error) {
-    console.log("Bad JSON returned:", text);
-    throw new Error("Gemini did not return valid JSON");
-  }
-
+  const model = "gemini-2.5-flash";
+  const currentCard = await generateQuestionCard({ model, prompt });
+  console.log("Generated question:", currentCard.question);
   return currentCard;
 }
 

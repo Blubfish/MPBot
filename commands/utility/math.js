@@ -4,8 +4,9 @@ const {
   ButtonStyle,
   ActionRowBuilder,
 } = require("discord.js");
-const getMathQuestion = require("../../questions/math_questions");
+const getMathQuestion = require("../../questions/mathQuestions");
 const activeQuestions = require("../../activeQuestions");
+const makeCardImage = require("../../questions/makeCardImage");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -34,6 +35,7 @@ module.exports = {
             value: "chapter8",
           },
           { name: "Chapter 9: Infinite Series", value: "chapter9" },
+          { name: "Chapter 10: Conics, Parametric Equations, and Polar Coordinates/Vectors", value: "chapter10" },
         ),
     ),
 
@@ -52,9 +54,10 @@ module.exports = {
       interaction.options.getString("chapter"),
     );
 
+    const cardQuestionImagePath = await makeCardImage(questionData.question);
 
     await interaction.editReply({
-      content: questionData.question,
+      files: [cardQuestionImagePath],
       components: [row],
     });
 

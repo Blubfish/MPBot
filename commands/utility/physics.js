@@ -6,6 +6,7 @@ const {
 } = require("discord.js");
 const getPhysicsQuestion = require("../../questions/physics_questions");
 const activeQuestions = require("../../activeQuestions");
+const makeCardImage = require("../../questions/makeCardImage");
 
 
 module.exports = {
@@ -27,10 +28,9 @@ module.exports = {
           { name: "Unit 6: Oscillations", value: "unit6" },
           { name: "Unit 7: Electrostatics", value: "unit7" },
           { name: "Unit 8: Gauss's Law", value: "unit8" },
-          {
-            name: "Unit 9: Electric Potential and Electric Potential Energy",
-            value: "unit9",
-          },
+          { name: "Unit 9: Electric Potential and Electric Potential Energy", value: "unit9" },
+          { name: "Unit 10: Circuits", value: "unit10" },
+          { name: "Unit 11: Magnetism", value: "unit11" },
         ),
     ),
 
@@ -49,8 +49,10 @@ module.exports = {
       interaction.options.getString("unit"),
     );
 
+    const cardQuestionImagePath = await makeCardImage(questionData.question);
+
     await interaction.editReply({
-      content: questionData.question,
+      files: [cardQuestionImagePath],
       components: [row],
     });
 

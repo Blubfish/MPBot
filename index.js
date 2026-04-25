@@ -1,5 +1,6 @@
 require("dotenv").config();
 const activeQuestions = require("./activeQuestions");
+const makeCardImage = require("./questions/makeCardImage");
 
 const {
   Client,
@@ -88,8 +89,10 @@ client.on(Events.InteractionCreate, async (interaction) => {
         });
       }
 
+      const cardAnswerImagePath = await makeCardImage(questionData.answer);
+
       await interaction.reply({
-        content: questionData.answer,
+        files: [cardAnswerImagePath],
         flags: MessageFlags.Ephemeral,
       });
     }
