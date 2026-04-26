@@ -1,6 +1,22 @@
 const puppeteer = require("puppeteer");
 const katex = require('katex');
 
+let browser = null;
+
+async function getBrowser() {
+  if (!browser){
+    browser = await puppeteer.launch({
+      executablePath: puppeteer.executablePath(),
+      args: [
+        '--no-sandbox', 
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage' 
+      ],
+    });
+  } 
+  return browser
+}
+
 async function makeCardImage(currentCard) {
   const html = `
     <!DOCTYPE html>
@@ -51,15 +67,7 @@ async function makeCardImage(currentCard) {
     </html>
   `;
 
-  const browser = await puppeteer.launch({
-    executablePath: puppeteer.executablePath(),
-    args: [
-      '--no-sandbox', 
-      '--disable-setuid-sandbox',
-      '--disable-dev-shm-usage' 
-    ],
-  });
-  
+  const browser = await getBrowser();
   const page = await browser.newPage();
 
   await page.setViewport({ width: 1000, height: 1200, deviceScaleFactor: 2 });
@@ -69,7 +77,7 @@ async function makeCardImage(currentCard) {
   const card = await page.$(".card");
   await card.screenshot({ path: "card.png" });
 
-  await browser.close();
+  await page.close();
 
   return "card.png";
 }
