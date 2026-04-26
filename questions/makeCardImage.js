@@ -52,7 +52,7 @@ async function makeCardImage(currentCard) {
   `;
 
   const browser = await puppeteer.launch({
-    executablePath: '/usr/bin/chromium-browser',
+    executablePath: puppeteer.executablePath(),
     args: [
       '--no-sandbox', 
       '--disable-setuid-sandbox',
