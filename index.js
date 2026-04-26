@@ -89,9 +89,11 @@ client.on(Events.InteractionCreate, async (interaction) => {
         });
       }
 
+      await interaction.deferReply({ ephemeral: true });
+
       const cardAnswerImagePath = await makeCardImage(questionData.answer);
 
-      await interaction.reply({
+      await interaction.editReply({
         files: [cardAnswerImagePath],
         flags: MessageFlags.Ephemeral,
       });
