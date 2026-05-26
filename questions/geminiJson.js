@@ -17,7 +17,10 @@ function validateQuestionCard(value) {
     throw new Error('Response must contain exactly "question" and "answer"');
   }
 
-  if (typeof value.question !== "string" || value.question.trim().length === 0) {
+  if (
+    typeof value.question !== "string" ||
+    value.question.trim().length === 0
+  ) {
     throw new Error('Field "question" must be a non-empty string');
   }
 
@@ -94,9 +97,10 @@ async function generateQuestionCard({ model, prompt, maxAttempts = 3 }) {
       invalidText = text;
       return validateQuestionCard(JSON.parse(text));
     } catch (error) {
-      lastError = error instanceof SyntaxError
-        ? `JSON parse error: ${error.message}`
-        : error.message;
+      lastError =
+        error instanceof SyntaxError
+          ? `JSON parse error: ${error.message}`
+          : error.message;
 
       if (attempt === maxAttempts) {
         throw new Error(

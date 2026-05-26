@@ -35,7 +35,10 @@ module.exports = {
             value: "chapter8",
           },
           { name: "Chapter 9: Infinite Series", value: "chapter9" },
-          { name: "Chapter 10: Conics, Parametric Equations, and Polar Coordinates/Vectors", value: "chapter10" },
+          {
+            name: "Chapter 10: Conics, Parametric Equations, and Polar Coordinates/Vectors",
+            value: "chapter10",
+          },
         ),
     ),
 

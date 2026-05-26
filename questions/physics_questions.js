@@ -41,19 +41,20 @@ async function getPhysicsQuestion(topic) {
     unit6: makePrompt("Unit 6: Oscillations"),
     unit7: makePrompt("Unit 7: Electrostatics"),
     unit8: makePrompt("Unit 8: Gauss's Law"),
-    unit9: makePrompt("Unit 9: Electric Potential and Electric Potential Energy"),  
+    unit9: makePrompt(
+      "Unit 9: Electric Potential and Electric Potential Energy",
+    ),
     unit10: makePrompt("Unit 10: Circuits"),
     unit11: makePrompt("Unit 11: Magnetism"),
   };
 
   const prompt = prompts[topic];
 
-
   if (!prompt) {
     throw new Error("Invalid topic");
   }
 
-  const model = "gemini-2.5-flash";
+  const model = "gemini-3-flash-preview";
   const currentCard = await generateQuestionCard({ model, prompt });
   console.log("Generated question:", currentCard.question);
   return currentCard;

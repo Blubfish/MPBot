@@ -46,7 +46,6 @@ for (const folder of commandFolders) {
 
 client.on(Events.InteractionCreate, async (interaction) => {
   if (interaction.isChatInputCommand()) {
-
     const command = interaction.client.commands.get(interaction.commandName);
 
     if (!command) {
@@ -75,32 +74,31 @@ client.on(Events.InteractionCreate, async (interaction) => {
   }
 
   if (interaction.isButton()) {
-  try {
-    if (
-      interaction.customId === "getPhysicsAnswer" ||
-      interaction.customId === "getMathAnswer"
-    ) {
-      const questionData = activeQuestions.get(interaction.message.id);
+    try {
+      if (
+        interaction.customId === "getPhysicsAnswer" ||
+        interaction.customId === "getMathAnswer"
+      ) {
+        const questionData = activeQuestions.get(interaction.message.id);
 
-      if (!questionData) {
-        return await interaction.reply({
-          content: "I couldn't find the saved answer for this question.",
+        if (!questionData) {
+          return await interaction.reply({
+            content: "I couldn't find the saved answer for this question.",
+            flags: MessageFlags.Ephemeral,
+          });
+        }
+
+        await interaction.deferReply({ ephemeral: true });
+
+        const cardAnswerImagePath = await makeCardImage(questionData.answer);
+
+        await interaction.editReply({
+          files: [cardAnswerImagePath],
           flags: MessageFlags.Ephemeral,
         });
       }
-
-      await interaction.deferReply({ ephemeral: true });
-
-      const cardAnswerImagePath = await makeCardImage(questionData.answer);
-
-      await interaction.editReply({
-        files: [cardAnswerImagePath],
-        flags: MessageFlags.Ephemeral,
-      });
+    } catch (error) {
+      console.error(error);
     }
-  } catch (error) {
-    console.error(error);
   }
-}
-
 });
