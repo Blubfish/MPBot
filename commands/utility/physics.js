@@ -4,8 +4,8 @@ const {
   ButtonStyle,
   ActionRowBuilder,
 } = require("discord.js");
-const getPhysicsQuestion = require("../../questions/physics_questions");
-const activeQuestions = require("../../activeQuestions");
+const getPhysicsQuestion = require("../../questions/physicsQuestions");
+const { setActive } = require("../../activeQuestions");
 const makeCardImage = require("../../questions/makeCardImage");
 
 module.exports = {
@@ -60,6 +60,6 @@ module.exports = {
 
     const reply = await interaction.fetchReply();
 
-    activeQuestions.set(reply.id, questionData);
+    setActive(reply.id, questionData, "physics");
   },
 };

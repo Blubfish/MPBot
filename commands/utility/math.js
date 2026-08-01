@@ -5,7 +5,7 @@ const {
   ActionRowBuilder,
 } = require("discord.js");
 const getMathQuestion = require("../../questions/mathQuestions");
-const activeQuestions = require("../../activeQuestions");
+const { setActive } = require("../../activeQuestions");
 const makeCardImage = require("../../questions/makeCardImage");
 
 module.exports = {
@@ -66,6 +66,6 @@ module.exports = {
 
     const reply = await interaction.fetchReply();
 
-    activeQuestions.set(reply.id, questionData);
+    setActive(reply.id, questionData, "math");
   },
 };

@@ -54,19 +54,26 @@ async function callGemini({ model, parts, generationConfig }) {
     },
   );
 
-  const data = await response.json();
+  try {
+    if (response.status === 429) {
+      return JSON.stringify({
+        question: "Ran out of Gemini limits :((",
+        answer: "Ran out of Gemini limits :((",
+      });
+    }
 
-  if (!response.ok) {
-    throw new Error(data.error?.message || "Gemini request failed");
+    const data = await response.json();
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+    if (!text) {
+      throw new Error(data.error?.message || "No text returned from Gemini");
+    }
+
+    return text;
+  } catch (err) {
+    console.error("Gemini request failed:", err);
+    throw err;
   }
-
-  const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-
-  if (!text) {
-    throw new Error("No text returned from Gemini");
-  }
-
-  return text;
 }
 
 async function generateQuestionCard({ model, prompt, maxAttempts = 3 }) {
@@ -93,6 +100,8 @@ async function generateQuestionCard({ model, prompt, maxAttempts = 3 }) {
           responseMimeType: "application/json",
         },
       });
+
+      console.log(text);
 
       invalidText = text;
       return validateQuestionCard(JSON.parse(text));

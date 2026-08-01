@@ -1,5 +1,5 @@
 require("dotenv").config();
-const activeQuestions = require("./activeQuestions");
+const { getActive } = require("./activeQuestions");
 const makeCardImage = require("./questions/makeCardImage");
 
 const {
@@ -14,6 +14,20 @@ const { get } = require("node:http");
 const path = require("node:path");
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+
+const required = [
+  "DISCORD_TOKEN",
+  "DISCORD_CLIENT_ID",
+  "DISCORD_GUILD_ID",
+  "GEMINI_API_KEY",
+  "GEMINI_MODEL",
+];
+
+for (const key of required) {
+  if (!process.env[key]) {
+    throw new Error(`Missing required env var: ${key}`);
+  }
+}
 
 client.once(Events.ClientReady, (readyClient) => {
   console.log(`Ready! Logged in as ${readyClient.user.tag}`);
@@ -79,7 +93,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
         interaction.customId === "getPhysicsAnswer" ||
         interaction.customId === "getMathAnswer"
       ) {
-        const questionData = activeQuestions.get(interaction.message.id);
+        const questionData = getActive(interaction.message.id);
 
         if (!questionData) {
           return await interaction.reply({

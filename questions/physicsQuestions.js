@@ -1,7 +1,28 @@
 require("dotenv").config();
 const { generateQuestionCard } = require("./geminiJson");
+const { oldPhysicsQuestions } = require("../activeQuestions");
 
 async function getPhysicsQuestion(topic) {
+  let repeatedQuestion = "";
+  const sanitize = (s) =>
+    String(s)
+      .replace(/\s+/g, " ") // collapse whitespace/newlines
+      .replace(/[`"']/g, "") // remove problematic quotes/backticks
+      .trim()
+      .slice(0, 300); // limit length per question
+
+  try {
+    const recent = Array.from(oldPhysicsQuestions.values()).slice(-10);
+    for (const entry of recent) {
+      const q = entry?.data?.question;
+      if (q) repeatedQuestion += sanitize(q) + "; ";
+    }
+    repeatedQuestion = repeatedQuestion.replace(/;\s*$/, "");
+  } catch (e) {
+    console.error("Could not build repeatedQuestion list:", e);
+    repeatedQuestion = "";
+  }
+
   const rules = `
       Return only a single raw JSON object.
       Output must be directly parseable by JSON.parse with no preprocessing.
@@ -28,7 +49,7 @@ async function getPhysicsQuestion(topic) {
     `;
 
   function makePrompt(topicText) {
-    return `Generate one random AP Physics style question from ${topicText}.\n${rules}`;
+    return `Generate one random AP Physics style question from ${topicText}.\n${rules}. \nDO NOT generate these type of questions: ${repeatedQuestion}.`;
   }
 
   const prompts = {
@@ -54,7 +75,7 @@ async function getPhysicsQuestion(topic) {
     throw new Error("Invalid topic");
   }
 
-  const model = "gemini-3-flash-preview";
+  const model = process.env.GEMINI_MODEL;
   const currentCard = await generateQuestionCard({ model, prompt });
   console.log("Generated question:", currentCard.question);
   return currentCard;

@@ -1,7 +1,24 @@
 require("dotenv").config();
 const { generateQuestionCard } = require("./geminiJson");
+const { oldMathQuestions } = require("../activeQuestions");
 
 async function getMathQuestion(topic) {
+  let repeatedQuestion = "";
+  const sanitize = (s) =>
+    String(s).replace(/\s+/g, " ").replace(/[`"']/g, "").trim().slice(0, 300);
+
+  try {
+    const recent = Array.from(oldMathQuestions.values()).slice(-10);
+    for (const entry of recent) {
+      const q = entry?.data?.question;
+      if (q) repeatedQuestion += sanitize(q) + "; ";
+    }
+    repeatedQuestion = repeatedQuestion.replace(/;\s*$/, "");
+  } catch (e) {
+    console.error("Could not build repeatedQuestion list:", e);
+    repeatedQuestion = "";
+  }
+
   const rules = `
       Return only a single raw JSON object.
       Output must be directly parseable by JSON.parse with no preprocessing.
@@ -28,7 +45,7 @@ async function getMathQuestion(topic) {
     `;
 
   function makePrompt(topicText) {
-    return `Generate one random AP Calculus BC style question from ${topicText}.\n${rules}`;
+    return `Generate one random AP Calculus BC style question from ${topicText}.\n${rules}. \nDO NOT do these type of questions: ${repeatedQuestion}.`;
   }
 
   const prompts = {
@@ -56,7 +73,7 @@ async function getMathQuestion(topic) {
     throw new Error("Invalid topic");
   }
 
-  const model = "gemini-3-flash-preview";
+  const model = process.env.GEMINI_MODEL;
   const currentCard = await generateQuestionCard({ model, prompt });
   console.log("Generated question:", currentCard.question);
 

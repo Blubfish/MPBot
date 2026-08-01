@@ -7,11 +7,6 @@ async function getBrowser() {
   if (!browser) {
     browser = await puppeteer.launch({
       executablePath: puppeteer.executablePath(),
-      args: [
-        "--no-sandbox",
-        "--disable-setuid-sandbox",
-        "--disable-dev-shm-usage",
-      ],
     });
   }
   return browser;
@@ -70,16 +65,16 @@ async function makeCardImage(currentCard) {
   const browser = await getBrowser();
   const page = await browser.newPage();
 
-  await page.setViewport({ width: 1000, height: 1200, deviceScaleFactor: 2 });
+  await page.setViewport({ width: 1200, height: 1200, deviceScaleFactor: 2 });
   await page.setContent(html, { waitUntil: "networkidle0" });
   await page.waitForFunction(() => window.KATEX_DONE === true);
 
   const card = await page.$(".card");
-  await card.screenshot({ path: "card.png" });
+  const image = await card.screenshot();
 
   await page.close();
 
-  return "card.png";
+  return image;
 }
 
 module.exports = makeCardImage;
